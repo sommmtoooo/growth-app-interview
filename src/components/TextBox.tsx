@@ -14,7 +14,9 @@ export default function TextBox({
       type={type}
       placeholder={placeholder}
       onChange={onChange}
-      className={className ? className : `w-full px-3 py-2 rounded-md`}
+      className={
+        className ? className : `w-full px-3 py-2 bg-neutral-200 rounded-md`
+      }
     />
   );
 }

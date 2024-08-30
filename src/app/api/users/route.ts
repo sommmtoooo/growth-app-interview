@@ -1,16 +1,7 @@
 import dbConnection from "@/lib/mongodb";
 import User from "@/models/User";
+import { hashPayload } from "@/utils";
 import { NextResponse } from "next/server";
-
-export async function GET(req: Request) {
-  await dbConnection();
-  try {
-    const users = await User.find({});
-    return NextResponse.json({ success: true, data: users });
-  } catch (error) {
-    return NextResponse.json({ success: false });
-  }
-}
 
 export async function POST(req: Request) {
   const { username, password } = await req.json();
@@ -35,10 +26,11 @@ export async function POST(req: Request) {
 
     await User.create({
       username,
-      password,
+      password: hashPayload(password),
     });
-    return Response.json({ succes: true, message: "User Created" });
+    return Response.json({ success: true, message: "User Created" });
+
   } catch (error) {
-    return Response.json({ succes: false, message: `${error}` });
+    return Response.json({ success: false, message: `${error}` });
   }
 }

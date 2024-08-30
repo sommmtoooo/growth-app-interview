@@ -2,9 +2,9 @@
 
 import Button from "@/components/Button";
 import TextBox from "@/components/TextBox";
-import { LoginPayload } from "@/types";
 import Link from "next/link";
-import { ChangeEvent, ChangeEventHandler, useState } from "react";
+import { useRouter } from "next/navigation";
+import { ChangeEvent, ChangeEventHandler, FormEvent, useState } from "react";
 
 import toast, { Toaster } from "react-hot-toast";
 
@@ -12,8 +12,9 @@ export default function SignUpPage() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [loading, SetLoading] = useState(false);
+  const router = useRouter()
 
-  const handleSubmit = async (event) => {
+  const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
     SetLoading(true);
 
@@ -33,9 +34,11 @@ export default function SignUpPage() {
 
       if (data.success) {
         toast("Account Created :)");
+        router.push('/auth/sign-in')
+      } else {
+        if (data.message) toast(data.message);
       }
 
-      if (data.message) toast(data.message);
     } catch (error) {
       console.log(error);
     } finally {
@@ -45,7 +48,7 @@ export default function SignUpPage() {
 
   return (
     <main className="min-h-[100vh] flex flex-col justify-center">
-      <div className="w-2/6 mx-auto">
+      <div className="w-5/6 max-w-[500px] mx-auto">
         <div className="text-center my-3">
           <h1 className="font-bold text-2xl text-green-600">Sign Up</h1>
           <p className="text-neutral-500">

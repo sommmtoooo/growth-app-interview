@@ -4,29 +4,30 @@ import Button from "@/components/Button";
 import TextBox from "@/components/TextBox";
 import { signIn } from "next-auth/react";
 import Link from "next/link";
-import { ChangeEvent, ChangeEventHandler, useState } from "react";
+import { ChangeEvent, FormEvent, useState } from "react";
 
 import toast, { Toaster } from "react-hot-toast";
+import { measureMemory } from "vm";
 
 export default function SignInPage() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [loading, SetLoading] = useState(false);
 
-  const handleSubmit = async (event) => {
+  const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
     SetLoading(true);
     await signIn("credentials", {
       username,
       password,
       redirect: true,
-      callbackUrl: "/",
-    });
+      callbackUrl: "/"
+    })
   };
 
   return (
     <main className="min-h-[100vh] flex flex-col justify-center">
-      <div className="w-2/6 mx-auto">
+      <div className="w-5/6 max-w-[500px] mx-auto">
         <div className="text-center my-3">
           <h1 className="font-bold text-2xl text-green-600">Sign In</h1>
           <p className="text-neutral-500">
@@ -65,9 +66,9 @@ export default function SignInPage() {
         <hr />
         <div className="my-3">
           <p className="text-neutral-600 text-right">
-            Don't have an account ?{" "}
+            Have an account ?{" "}
             <Link href={"/auth/sign-up"} className="text-green-600 font-bold">
-              Sign In
+              Sign Up
             </Link>
           </p>
         </div>

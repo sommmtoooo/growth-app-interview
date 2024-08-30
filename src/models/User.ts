@@ -13,7 +13,7 @@ const UserSchema = new Schema({
     type: String,
     required: [true, "Kindly provide a username"],
     minlength: [6, "Username cannot be less than 6 characters"],
-    maxlength: [20, "Username cannot be more than 20 characters"],
+    maxlength: [60, "Username cannot be more than 20 characters"],
   },
 });
 
