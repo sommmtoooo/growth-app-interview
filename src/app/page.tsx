@@ -8,6 +8,10 @@ import toast, { Toaster } from "react-hot-toast";
 
 export default function Home() {
   const [loading, setLoading] = useState(false);
+  const [active, setActive] = useState(false);
+  const [fetching, setFetching] = useState(false);
+  const [response, setResponse] = useState('')
+
   const handleSignOut = async function () {
     setLoading(true);
     await signOut({
@@ -17,23 +21,31 @@ export default function Home() {
     setLoading(false);
     toast("Signed Out");
   };
+
+  const handlePromptClick = async function () {
+    setFetching(!fetching)
+    setResponse('Processing request')
+    setTimeout(() => { setActive(!active); setResponse(active ? 'Switched Off' : 'Switched On'); setFetching(false) }, 1000)
+  }
+
   return (
     <main>
       <div className="w-5/6 min-h-screen mx-auto flex flex-col justify-center align-center text-center">
         <h1 className="font-bold  text-xl text-green-600">LIT</h1>
         <p className="text-neutral-600">Try command the bulb with words</p>
         <div className="w-max mx-auto my-6">
-          <LightBulb />
+          <LightBulb active={active} />
         </div>
-        <div className="w-full min-w-[420px] max-w-[420px] h-max mx-auto my-4 rounded-full overflow-hidden text-left text-neutral-700">
-          <span>Alright</span>
+        <div className="w-full min-w-[420px] max-w-[420px] h-max mx-auto rounded-full overflow-hidden text-left text-neutral-500">
+          <p className="my-3 transition-all">{response}</p>
         </div>
         <div className="relative w-full min-w-[420px] max-w-[420px] h-max mx-auto rounded-full overflow-hidden border-2 border-neutral-300 focus:border-yellow-500">
           <TextBox type="text" placeholder="Enter Command" />
           <Button
             type="button"
             className="w-max absolute right-0 top-0 px-3 py-2 h-100 bg-green-500 rounded-full text-white"
-            name="Prompt"
+            name={fetching ? "..." : "Prompt"}
+            onClick={handlePromptClick}
           />
         </div>
         <div className="w-full min-w-[420px] max-w-[420px] h-max mx-auto my-4 rounded-full overflow-hidden">

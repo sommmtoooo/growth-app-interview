@@ -4,24 +4,61 @@ import Button from "@/components/Button";
 import TextBox from "@/components/TextBox";
 import { signIn } from "next-auth/react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { ChangeEvent, FormEvent, useState } from "react";
 
 import toast, { Toaster } from "react-hot-toast";
-import { measureMemory } from "vm";
 
 export default function SignInPage() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [loading, SetLoading] = useState(false);
+  const router = useRouter()
+
+
+  const ToastInfo = {
+    background: 'green',
+    color: 'white'
+  }
 
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
+    if (username.length < 3 || password.length < 3) {
+      toast('Usercame must be 3 or more characters long', {
+        position: 'bottom-left', style: ToastInfo
+      })
+      return
+    }
+
+    if (username.length < 3 || password.length < 3) {
+      toast('Password should be 6 characters or more', {
+        position: 'bottom-left', style: ToastInfo
+      })
+      return
+    }
+
     SetLoading(true);
+
     await signIn("credentials", {
       username,
       password,
-      redirect: true,
-      callbackUrl: "/"
+      redirect: false
+    }).then(({ ok, error }) => {
+      SetLoading(false);
+      if (ok) {
+        toast("Signed In")
+        router.push('/')
+      } else {
+        if (error) {
+          if (error === "CredentialsSignin") {
+            toast('Invalid Credentials')
+          } else {
+            toast('Something went wrong')
+          }
+        } else {
+          toast('Invalid Credentials')
+        }
+      }
     })
   };
 
@@ -39,6 +76,7 @@ export default function SignInPage() {
             <TextBox
               name="username"
               type="text"
+              minLength={3}
               placeholder="username.john.doe"
               onChange={(event: ChangeEvent<HTMLInputElement>) =>
                 setUsername(event.target.value)
@@ -49,6 +87,7 @@ export default function SignInPage() {
             <TextBox
               name="password"
               type="password"
+              minLength={3}
               placeholder="*********"
               onChange={(event: ChangeEvent<HTMLInputElement>) =>
                 setPassword(event.target.value)
@@ -73,7 +112,9 @@ export default function SignInPage() {
           </p>
         </div>
       </div>
-      <Toaster position="top-right" />
+      <Toaster position="top-right" toastOptions={{
+        duration: 1750
+      }} />
     </main>
   );
 }
