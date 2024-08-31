@@ -23,3 +23,18 @@ Create full-stack chat app that allows the user toggle a virtual light bulb from
 ### Model Structure
 
 ![](./Model.png)
+
+
+### Documentation
+
+#### API
+
+##### AUTH
+Utilizing NextAuth for authentication, this endpoint simply follows their required specifications to setup; This route is solely responsible for handling the authentication state of users using ( Sessions ). When an a signIn event is surmoned, I prepared a query to the database that checks if that credentials provided for the user exists and return the retrieved data after verifying password with the hashed password stored in the database.
+
+##### User
+
+Retrieval of data for a user is all done on this endpoint.
+
+
+/api/users (POST) -> Fetches the information of a user

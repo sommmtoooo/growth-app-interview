@@ -16,7 +16,7 @@ export const options: NextAuthOptions = {
       async authorize(credentials, req) {
         try {
           const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:3000';
-          const res = await fetch(`${baseUrl}/api/users/register`, {
+          const res = await fetch(`${baseUrl}/api/users/`, {
             method: "POST",
             body: JSON.stringify(credentials),
             headers: { "Content-Type": "application/json" },

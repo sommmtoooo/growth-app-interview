@@ -1,10 +1,9 @@
 import dbConnection from "@/lib/mongodb";
-import LightBulb from "@/models/LightBulb";
 import User from "@/models/User";
-import { hashPayload } from "@/utils";
-import { NextResponse } from "next/server";
+import { verifyPayload } from "@/utils";
+import { NextRequest, NextResponse } from "next/server";
 
-export async function POST(req: Request) {
+export async function POST(req: NextRequest) {
   const { username, password } = await req.json();
 
   if (!username || !password) {
@@ -15,27 +14,23 @@ export async function POST(req: Request) {
   }
 
   try {
-    await dbConnection();
     const existingUser = await User.findOne({ username });
 
-    if (existingUser) {
+    if (!existingUser) {
       return NextResponse.json(
-        { sucess: false, message: "Username already exists." },
-        { status: 400 },
+        { sucess: false, message: "Invalid Credentials" },
+        { status: 401 },
       );
     }
 
-    const user = await User.create({
-      username,
-      password: hashPayload(password),
-    });
+    const validate_password = await verifyPayload(existingUser.password, password)
+    if (!validate_password)
+      return NextResponse.json(
+        { sucess: false, message: "Invalid Credentials" },
+        { status: 401 },
+      );
 
-    await LightBulb.create({
-      userId: user._id
-    })
-    
-    return Response.json({ success: true, message: "User Created" });
-
+    return Response.json({ success: true, user: existingUser });
   } catch (error) {
     return Response.json({ success: false, message: `${error}` });
   }
