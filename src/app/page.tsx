@@ -3,7 +3,7 @@ import Button from "@/components/Button";
 import LightBulb from "@/components/LightBulb";
 import TextBox from "@/components/TextBox";
 import { signOut } from "next-auth/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
 
 export default function Home() {
@@ -21,6 +21,14 @@ export default function Home() {
     setLoading(false);
     toast("Signed Out");
   };
+
+  useEffect(() => {
+    fetch('/api/lightbulb').then(res => res.json()).then((data) => {
+      if(data.success){
+        setActive(data.data.status)
+      }
+    })
+  }, [])
 
   const handlePromptClick = async function () {
     setFetching(!fetching)

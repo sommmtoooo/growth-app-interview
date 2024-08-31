@@ -1,4 +1,5 @@
 import dbConnection from "@/lib/mongodb";
+import LightBulb from "@/models/LightBulb";
 import User from "@/models/User";
 import { hashPayload } from "@/utils";
 import { NextResponse } from "next/server";
@@ -24,10 +25,15 @@ export async function POST(req: Request) {
       );
     }
 
-    await User.create({
+    const user = await User.create({
       username,
       password: hashPayload(password),
     });
+
+    await LightBulb.create({
+      userId: user._id
+    })
+    
     return Response.json({ success: true, message: "User Created" });
 
   } catch (error) {
