@@ -60,7 +60,6 @@ export default function SignInPage() {
         }
       }
     }).catch((e) => {
-      console.trace(e)
       SetLoading(false)
       toast('Something went wrong')
     })
