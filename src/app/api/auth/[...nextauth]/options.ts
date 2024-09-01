@@ -1,5 +1,9 @@
+import dbConnection from "@/lib/mongodb";
+import User from "@/models/User";
+import { verifyPayload } from "@/utils";
 import type { NextAuthOptions, User } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
+import { NextResponse } from "next/server";
 
 export const options: NextAuthOptions = {
   secret: process.env.NEXTAUTH_SECRET,
@@ -15,26 +19,24 @@ export const options: NextAuthOptions = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials, req) {
-        return {
-          _id: 'asdasd',
-          username: 'somto',
-          password: 'password'
-        }
-        try {
-          const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:3000';
-          const res = await fetch(`${baseUrl}/api/users/`, {
-            method: "POST",
-            body: JSON.stringify(credentials),
-            headers: { "Content-Type": "application/json" },
-          });
-          const { user } = await res.json();
+        const { username, password } = credentials
 
-          if (res.ok && user) {
-            return user;
+        try {
+
+          await dbConnection()
+          const existingUser = await User.findOne({ username });
+          const validate_password = await verifyPayload(existingUser.password, password)
+
+          if (!existingUser) {
+            return null
           }
 
+          if (!validate_password) {
+            return null
+          }
 
-          return null;
+          return existingUser
+
         } catch (err) {
           return null
         }
