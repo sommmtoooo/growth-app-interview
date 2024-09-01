@@ -10,6 +10,7 @@ import { useRouter } from "next/navigation";
 import toast, { Toaster } from "react-hot-toast";
 import { useFormState } from "react-dom";
 import { useEffect } from "react";
+import { useSession } from "next-auth/react";
 
 
 export default function SignUpPage() {
@@ -18,7 +19,15 @@ export default function SignUpPage() {
     username: '',
     password: ''
   })
+  const { data: session } = useSession()
 
+
+  useEffect(() => {
+    if (session)
+      router.push('/')
+  }, [session, router])
+
+  
   useEffect(() => {
     if (state?.success) {
       if (state.message)

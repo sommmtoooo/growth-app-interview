@@ -22,6 +22,16 @@ const payloadSchema = z.object({
 export async function registerUser(prevState: any, formData: FormData) {
     'use server'
 
+    try{
+        await dbConnection()
+    }catch(e){
+        const state: State = {
+            success: false,
+            message: 'Something Went Wrong, Please Try Again'
+        }
+        return state;
+    }
+
     const validateData = payloadSchema.safeParse({
         username: formData.get('username'),
         password: formData.get('password'),
@@ -41,7 +51,7 @@ export async function registerUser(prevState: any, formData: FormData) {
 
     try {
         const { username, password } = validateData.data
-        await dbConnection()
+
 
 
         const existingUser = await User.findOne({ username });

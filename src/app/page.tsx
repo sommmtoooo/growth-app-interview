@@ -44,10 +44,10 @@ export default function Home() {
         <div className="w-max mx-auto my-6">
           <LightBulb active={active} />
         </div>
-        <div className="w-full min-w-[420px] max-w-[420px] h-max mx-auto rounded-full overflow-hidden text-left text-neutral-500">
+        <div className="w-full max-w-[420px] h-max mx-auto rounded-full overflow-hidden text-left text-neutral-500">
           <p className="my-3 transition-all">{response}</p>
         </div>
-        <div className="relative w-full min-w-[420px] max-w-[420px] h-max mx-auto rounded-full overflow-hidden border-2 border-neutral-300 focus:border-yellow-500">
+        <div className="relative w-full  max-w-[420px] h-max mx-auto rounded-full overflow-hidden border-2 border-neutral-300 focus:border-yellow-500">
           <TextBox type="text" placeholder="Enter Command" />
           <Button
             type="button"
@@ -56,7 +56,7 @@ export default function Home() {
             onClick={handlePromptClick}
           />
         </div>
-        <div className="w-full min-w-[420px] max-w-[420px] h-max mx-auto my-4 rounded-full overflow-hidden">
+        <div className="w-full  max-w-[420px] h-max mx-auto my-4 rounded-full overflow-hidden">
           <Button
             type="button"
             className="px-3 py-2 h-100 bg-red-500 rounded-full text-white"

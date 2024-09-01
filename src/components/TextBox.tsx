@@ -17,7 +17,7 @@ export default function TextBox({
       name={name}
       onChange={onChange}
       className={
-        className ? className : `w-full px-3 py-2 bg-neutral-200 rounded-md`
+        className ? className : `w-full px-3 py-2 bg-neutral-200 rounded-md border-none`
       }
     />
   );

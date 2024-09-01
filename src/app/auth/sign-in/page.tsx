@@ -1,11 +1,12 @@
 "use client";
 
+import { options } from "@/app/api/auth/[...nextauth]/options";
 import Button from "@/components/Button";
 import TextBox from "@/components/TextBox";
-import { signIn } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { ChangeEvent, FormEvent, useState } from "react";
+import { redirect, useRouter } from "next/navigation";
+import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 
 import toast, { Toaster } from "react-hot-toast";
 
@@ -14,6 +15,13 @@ export default function SignInPage() {
   const [password, setPassword] = useState("");
   const [loading, SetLoading] = useState(false);
   const router = useRouter()
+  const { data: session } = useSession()
+
+
+  useEffect(() => {
+    if (session)
+      router.push('/')
+  }, [session, router])
 
 
   const ToastInfo = {
