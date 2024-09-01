@@ -1,4 +1,4 @@
-import type { NextAuthOptions } from "next-auth";
+import type { NextAuthOptions, User } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 
 export const options: NextAuthOptions = {
@@ -41,16 +41,17 @@ export const options: NextAuthOptions = {
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
-        token.username = user?.username
-        token.id = user?._id
+        let temp = user as User & { username?: string, _id?: string }
+        token.username = temp.username
+        token.id = temp._id
       }
       return token
     },
-    async session({ session, token }) {
+    async session({ session, token, user }) {
       if (token) {
         if (session.user) {
-          session.user.id = token.id
-          session.user.username = token.username
+          session.user.id = token.id as string
+          session.user.username = token.username as string
         }
       }
 
