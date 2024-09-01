@@ -59,6 +59,9 @@ export default function SignInPage() {
           toast('Invalid Credentials')
         }
       }
+    }).catch((e) => {
+      SetLoading(false)
+      toast('Something went wrong')
     })
   };
 

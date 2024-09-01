@@ -1,4 +1,5 @@
 "use server"
+import LightBulb from '@/components/LightBulb';
 import dbConnection from '@/lib/mongodb';
 import User from '@/models/User';
 import { hashPayload } from '@/utils';
@@ -54,14 +55,19 @@ export async function registerUser(prevState: any, formData: FormData) {
         }
 
 
-        const newUser = new User({
+        const user = await User.create({
             username,
             password: hashPayload(password),
         });
 
-        await newUser.save();
+
+        await LightBulb.create({
+            userId: user._id,
+            status: false
+        })
 
         revalidatePath('/')
+        
         const state: State = {
             success: true,
             message: 'Account Created'
@@ -134,7 +140,6 @@ export async function loginUser(prevState: any, formData: FormData) {
 
 
     } catch (error) {
-        console.trace(error)
         return {
             success: false,
             message: 'Something went wrong'

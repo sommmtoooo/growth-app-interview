@@ -14,7 +14,7 @@ export async function GET(req: NextRequest) {
         const lightbulb = await LightBulb.findOne({ userId: session?.user?.id })
 
         return NextResponse.json({success: true, data: {
-            status: lightbulb.isOn
+            status: lightbulb.status
         }})
 
     } catch (error) {

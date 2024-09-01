@@ -7,7 +7,7 @@ const LightBulbSchema = new Schema(
         ref: 'User',
         required: true,
       },
-      isOn: {
+      status: {
         type: Boolean,
         default: false,
       },

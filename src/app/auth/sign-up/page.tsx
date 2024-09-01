@@ -23,7 +23,7 @@ export default function SignUpPage() {
     if (state?.success) {
       if (state.message)
         toast(state.message)
-      setTimeout(() => {router.push('/auth/sign-in')}, 1500)
+      setTimeout(() => { router.push('/auth/sign-in') }, 1500)
     } else {
       if (state.message)
         toast(state.message)
