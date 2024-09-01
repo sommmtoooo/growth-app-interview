@@ -1,50 +1,34 @@
 "use client";
 
 import Button from "@/components/Button";
+import InfoField from "@/components/InfoField";
 import TextBox from "@/components/TextBox";
 import Link from "next/link";
+import { registerUser } from "@/app/actions";
 import { useRouter } from "next/navigation";
-import { ChangeEvent, ChangeEventHandler, FormEvent, useState } from "react";
 
 import toast, { Toaster } from "react-hot-toast";
+import { useFormState } from "react-dom";
+import { useEffect } from "react";
+
 
 export default function SignUpPage() {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [loading, SetLoading] = useState(false);
   const router = useRouter()
+  const [state, formAction] = useFormState(registerUser, {
+    username: '',
+    password: ''
+  })
 
-  const handleSubmit = async (event: FormEvent) => {
-    event.preventDefault();
-    SetLoading(true);
-
-    try {
-      const resp = await fetch("/api/auth/sign-up", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          username,
-          password,
-        }),
-      });
-
-      const data = await resp.json();
-
-      if (data.success) {
-        toast("Account Created :)");
-        router.push('/auth/sign-in')
-      } else {
-        if (data.message) toast(data.message);
-      }
-
-    } catch (error) {
-      console.log(error);
-    } finally {
-      SetLoading(false);
+  useEffect(() => {
+    if (state?.success) {
+      if (state.message)
+        toast(state.message)
+      setTimeout(() => router.push('/auth/sign-in'), 1500)
+    } else {
+      if (state.message)
+        toast(state.message)
     }
-  };
+  }, [state])
 
   return (
     <main className="min-h-[100vh] flex flex-col justify-center">
@@ -55,32 +39,31 @@ export default function SignUpPage() {
             Create an account to light that bulb
           </p>
         </div>
-        <form onSubmit={handleSubmit}>
+
+        <form action={formAction}>
           <div className="my-3">
             <TextBox
               name="username"
               type="text"
               placeholder="username.john.doe"
-              onChange={(event: ChangeEvent<HTMLInputElement>) =>
-                setUsername(event.target.value)
-              }
             />
+            {state?.errors?.username ?
+              <span className="text-red-500">{state.errors.username[0]}</span> : ''}
           </div>
           <div className="my-3">
             <TextBox
               name="password"
               type="password"
               placeholder="*********"
-              onChange={(event: ChangeEvent<HTMLInputElement>) =>
-                setPassword(event.target.value)
-              }
             />
+            {state?.errors?.password ?
+              <span className="text-red-500">{state.errors.password[0]}</span> : ''}
           </div>
           <div className="my-3">
             <Button
               className="w-full bg-green-600 text-white px-3 py-2 rounded-md"
               type="submit"
-              name={loading ? "..." : "Sign Up"}
+              name="Sign Up"
             />
           </div>
         </form>

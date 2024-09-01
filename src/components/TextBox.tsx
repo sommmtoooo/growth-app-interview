@@ -8,11 +8,13 @@ export default function TextBox({
   placeholder,
   className,
   onChange,
+  name
 }: Props) {
   return (
     <input
       type={type}
       placeholder={placeholder}
+      name={name}
       onChange={onChange}
       className={
         className ? className : `w-full px-3 py-2 bg-neutral-200 rounded-md`

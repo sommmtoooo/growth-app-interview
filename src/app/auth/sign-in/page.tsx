@@ -105,7 +105,7 @@ export default function SignInPage() {
         <hr />
         <div className="my-3">
           <p className="text-neutral-600 text-right">
-            Have an account ?{" "}
+            Don't Have an account ?{" "}
             <Link href={"/auth/sign-up"} className="text-green-600 font-bold">
               Sign Up
             </Link>
