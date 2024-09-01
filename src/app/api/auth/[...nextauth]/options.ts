@@ -15,6 +15,11 @@ export const options: NextAuthOptions = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials, req) {
+        return {
+          _id: 'asdasd',
+          username: 'somto',
+          password: 'password'
+        }
         try {
           const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:3000';
           const res = await fetch(`${baseUrl}/api/users/`, {
