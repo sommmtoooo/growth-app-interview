@@ -22,8 +22,12 @@ export default function SignUpPage() {
   useEffect(() => {
     if (state?.success) {
       if (state.message)
-        toast(state.message)
-      setTimeout(() => { router.push('/auth/sign-in') }, 1500)
+
+        setTimeout(() => {
+          toast(state.message);
+          toast('Kindly Login');
+          setTimeout(() => router.push('/auth/sign-in'), 2000)
+        }, 300)
     } else {
       if (state.message)
         toast(state.message)

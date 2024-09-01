@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
 import dbConnection from "@/lib/mongodb";
-import User from "@/models/User";
 import LightBulb from "@/models/LightBulb";
 import { getServerSession } from "next-auth";
 import { options } from "../auth/[...nextauth]/options";
@@ -18,7 +17,6 @@ export async function GET(req: NextRequest) {
         }})
 
     } catch (error) {
-        console.log(error)
         return NextResponse.json({ success: false, message: 'Hey There' });
     }
-}2
+}
