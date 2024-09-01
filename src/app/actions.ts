@@ -1,7 +1,7 @@
 "use server"
-import LightBulb from '@/components/LightBulb';
 import dbConnection from '@/lib/mongodb';
 import User from '@/models/User';
+import LightBulb from '@/models/LightBulb';
 import { hashPayload } from '@/utils';
 import { signIn } from 'next-auth/react';
 import { revalidatePath } from 'next/cache';
@@ -67,7 +67,7 @@ export async function registerUser(prevState: any, formData: FormData) {
         })
 
         revalidatePath('/')
-        
+
         const state: State = {
             success: true,
             message: 'Account Created'
@@ -76,76 +76,5 @@ export async function registerUser(prevState: any, formData: FormData) {
     } catch (error) {
         return { message: 'Something went wrong' }
     }
-
-}
-
-
-export async function loginUser(prevState: any, formData: FormData) {
-
-    'use server'
-
-
-
-    const validateData = payloadSchema.safeParse({
-        username: formData.get('username'),
-        password: formData.get('password'),
-    })
-
-
-    if (!validateData.success) {
-        const state: State = {
-            success: false,
-            errors: validateData.error.flatten().fieldErrors,
-        }
-
-        return state
-
-    }
-
-
-    try {
-        const { username, password } = validateData.data
-
-        await signIn("credentials", {
-            username,
-            password,
-            redirect: false
-        }).then(({ ok, error }) => {
-            if (ok) {
-                return {
-                    success: true,
-                    message: 'Signed In'
-                } as State;
-            } else {
-                if (error) {
-                    if (error === "CredentialsSignin") {
-                        return {
-                            success: false,
-                            message: 'Invalid Credentials'
-                        } as State;
-                    } else {
-                        return {
-                            success: false,
-                            message: 'Something went wrong'
-                        } as State;
-                    }
-                } else {
-                    return {
-                        success: false,
-                        message: 'Invalid Credentials'
-                    } as State;
-                }
-            }
-        })
-
-
-    } catch (error) {
-        return {
-            success: false,
-            message: 'Something went wrong'
-        } as State;
-    }
-
-
 
 }
