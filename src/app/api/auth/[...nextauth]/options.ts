@@ -1,7 +1,7 @@
 import dbConnection from "@/lib/mongodb";
 import User from "@/models/User";
 import { verifyPayload } from "@/utils";
-import type { NextAuthOptions, User } from "next-auth";
+import type { NextAuthOptions, User as AuthUser } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { NextResponse } from "next/server";
 
@@ -49,7 +49,7 @@ export const options: NextAuthOptions = {
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
-        let temp = user as User & { username?: string, _id?: string }
+        let temp = user as AuthUser & { username?: string, _id?: string }
         token.username = temp.username
         token.id = temp._id
       }
