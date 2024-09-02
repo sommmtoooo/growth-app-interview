@@ -21,7 +21,7 @@ export async function GET(req: NextRequest) {
 
 
 export async function POST(req: NextRequest) {
-  const { prompt } = req.json()
+  // const { prompt } = req.json()
   try {
     await dbConnection();
     const session = await getServerSession(options);
