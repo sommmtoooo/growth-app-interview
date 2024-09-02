@@ -9,12 +9,14 @@ Create full-stack chat app that allows the user toggle a virtual light bulb from
 
 **Requirements**
 - LightBulb Component Showing On & Off State (✅️)
-- GPT 4o-mini (function calling)  to get the light status and toggle the light status
+- GPT 4o-mini (function calling) to get the light status and toggle the light status
 
 **Bonus Points**
 
 - Add a simple username and password login page. (✅️)
 - Add End - End testing with Cypress 〰️
+
+> **NOTE**: Test Coverage For Just Sign In Page
 
 
 ---

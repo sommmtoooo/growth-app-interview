@@ -1,60 +1,112 @@
 import OpenAI from "openai";
+import dbConnection from "./mongodb";
+import LightBulb from "@/models/LightBulb";
 
 export const openai = new OpenAI({
-    organization: 'org-VlzB7X2nHIqMv70OPWcyPT7Q',
-    project: 'proj_J3amexffLEKDXjDtUuUyLsSm',
-    apiKey: process.env.OPEN_API_KEY as string
-})
+  organization: "org-VlzB7X2nHIqMv70OPWcyPT7Q",
+  project: "proj_J3amexffLEKDXjDtUuUyLsSm",
+  apiKey: process.env.OPEN_API_KEY as string,
+});
 
-// // Function to call GPT-4 model with function calling
-// async function callOpenAI(prompt, functions) {
-//   const response = await openai.chat.completions.create({
-//     model: 'gpt-4-0613',
-//     messages: [{ role: 'user', content: prompt }],
-//     functions,
-//   });
+export const tools = [
+  {
+    type: "function",
+    function: {
+      name: "get_light_bulb_status",
+      description:
+        "Get the light bulb status of a user. Call this whenever you need to know the light bulb status of a user, for example when a user asks 'To Switch On A LightBulb'",
+      parameters: {
+        type: "object",
+        properties: {
+          user_id: {
+            type: "string",
+            description: "The user's id.",
+          },
+          message: {
+            type: "string",
+            description: "Concise description less than 20 words for the user regarding the status retrieval.",
+          }
+        },
+        required: ["user_id", "message"],
+        additionalProperties: false,
+      },
+    },
+  },
+  {
+    type: "function",
+    function: {
+      name: "toggle_light_bulb_status",
+      description:
+        "Toggle the light bulb status of a user. Call this whenever you need to change the light bulb status of a user, for example when a user asks 'To Switch On A LightBulb'",
+      parameters: {
+        type: "object",
+        properties: {
+          user_id: {
+            type: "string",
+            description: "The user's id.",
+          },
+          message: {
+            type: "string",
+            description: "Concise description less than 20 for the user regarding changes made.",
+          },
+          new_lightbulb_status: {
+            type: "boolean",
+            description: "The new light bulb status for the user's light bulb.",
+          }
+        },
+        required: ["user_id", "message", "new_lightbulb_status"],
+        additionalProperties: false,
+      },
+    },
+  }
+];
 
-//   // Extract function call arguments
-//   const { function_call } = response.choices.[0].message;
-//   return function_call.arguments;
-// }
+export type LightBulbResponse = {
+  light_bulb_status?: boolean,
+  success: boolean,
+  reply: string;
+};
 
-// // Define function signatures for GPT-4
-// const functions = [
-//   {
-//     name: 'getLightStatus',
-//     description: 'Gets the status of a lightbulb for a specific user.',
-//     parameters: {
-//       type: 'object',
-//       properties: {
-//         user_id: { type: 'string', description: 'The ID of the user.' },
-//       },
-//       required: ['user_id'],
-//     },
-//   },
-//   {
-//     name: 'toggleLightStatus',
-//     description: 'Toggles the lightbulb status for a specific user.',
-//     parameters: {
-//       type: 'object',
-//       properties: {
-//         user_id: { type: 'string', description: 'The ID of the user.' },
-//       },
-//       required: ['user_id'],
-//     },
-//   },
-// ];
+export async function get_light_bulb_status(
+  user_id: string,
+  message: string,
+): Promise<LightBulbResponse> {
+  try {
+    await dbConnection();
+    const lightbulb = await LightBulb.findOne({ userId: user_id });
 
-// // Retrieve light status using OpenAI function calling
-// export async function getLightStatus(user_id) {
-//   const prompt = `Get the light status for user with ID: ${user_id}.`;
-//   const result = await callOpenAI(prompt, functions);
-//   return JSON.parse(result).status;
-// }
+    return Promise.resolve({
+      light_bulb_status: true,
+      success: true,
+      reply: message
+    })
+  } catch (e) {
+    return Promise.reject({
+      success: false,
+      light_bulb_status: null,
+      reply: message
+    })
+  }
+}
 
-// // Toggle light status using OpenAI function calling
-// export async function toggleLightStatus(user_id) {
-//   const prompt = `Toggle the light status for user with ID: ${user_id}.`;
-//   const result = await callOpenAI(prompt, functions);
-//   return JSON.parse(result).status;
-// }
+export async function toggle_light_bulb_status(
+  user_id: string,
+  message: string,
+  new_lightbulb_status: boolean,
+): Promise<LightBulbResponse> {
+  try {
+    await dbConnection();
+    const lightbulb = await LightBulb.findOne({ userId: user_id });
+    return Promise.resolve({
+      success: true,
+      light_bulb_status: lightbulb.status,
+      reply: message
+    });
+  } catch (e) {
+    return Promise.reject({
+      success: false,
+      light_bulb_status: null,
+      reply: 'something went wrong'
+    })
+  }
+}
